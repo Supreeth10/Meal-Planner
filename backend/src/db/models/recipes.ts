@@ -1,24 +1,8 @@
 /** @module Models/User */
 import TypeORM from "typeorm";
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Relation,
-  UpdateDateColumn,
-  ManyToOne,
-} from "typeorm";
 import { MealPlans } from "./meal_plans";
 import { RecipeIngredientRel } from "./recipe_ingredient_rel";
 
-import { User } from "./user";
-
-/**
- *  Class representing user table
- */
 @TypeORM.Entity()
 export class Recipes extends TypeORM.BaseEntity {
   @TypeORM.PrimaryGeneratedColumn()
@@ -34,8 +18,8 @@ export class Recipes extends TypeORM.BaseEntity {
   cuisine: string;
 
   @TypeORM.Column({
-    length: 500,
-    type: "varchar",
+  	length: 500,
+  	type: "varchar",
   })
   description: string;
 
@@ -43,8 +27,8 @@ export class Recipes extends TypeORM.BaseEntity {
   ids: TypeORM.Relation<MealPlans[]>;
 
   @TypeORM.OneToMany(
-    (type) => RecipeIngredientRel,
-    (rpi: RecipeIngredientRel) => rpi.recipe
+  	() => RecipeIngredientRel,
+  	(rpi: RecipeIngredientRel) => rpi.recipe
   )
   rpIngRel: TypeORM.Relation<RecipeIngredientRel[]>;
 
