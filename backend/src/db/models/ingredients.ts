@@ -1,18 +1,5 @@
 /** @module Models/User */
 import TypeORM from "typeorm";
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Relation,
-  UpdateDateColumn,
-} from "typeorm";
-import { Recipes } from "./recipes";
 import { RecipeIngredientRel } from "./recipe_ingredient_rel";
 import { ShoppingList } from "./shopping_list";
 
@@ -25,8 +12,8 @@ export class Ingredients extends TypeORM.BaseEntity {
   id: number;
 
   @TypeORM.Column({
-    length: 100,
-    type: "varchar",
+  	length: 100,
+  	type: "varchar",
   })
   ingName: string;
 
@@ -34,8 +21,8 @@ export class Ingredients extends TypeORM.BaseEntity {
   slId: TypeORM.Relation<ShoppingList[]>;
 
   @TypeORM.OneToMany(
-    (type) => RecipeIngredientRel,
-    (rpi: RecipeIngredientRel) => rpi.recipe
+  	() => RecipeIngredientRel,
+  	(rpi: RecipeIngredientRel) => rpi.recipe
   )
   rpIngRel: TypeORM.Relation<RecipeIngredientRel[]>;
 }
