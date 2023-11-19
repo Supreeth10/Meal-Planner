@@ -65,7 +65,7 @@ export const MealPlanForm = () => {
           <Col>
             <DropdownSelector
               title="Meal Type"
-              options={["breakfast", "lunch", "dinner"]}
+              options={["Breakfast", "Lunch", "Dinner"]}
               onSelect={handleMealType}
             />
             <h4>You selected {mealType}</h4>
