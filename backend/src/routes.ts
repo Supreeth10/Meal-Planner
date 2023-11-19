@@ -2,12 +2,9 @@
 import cors from "cors";
 import {
 	FastifyInstance,
-	FastifyReply,
-	FastifyRequest,
-	RouteShorthandOptions,
+	FastifyReply
 } from "fastify";
 import { User } from "./db/models/user";
-//import { ILike, LessThan, Not } from "typeorm";
 import { Recipes } from "./db/models/recipes";
 import { Ingredients } from "./db/models/ingredients";
 import { RecipeIngredientRel } from "./db/models/recipe_ingredient_rel";
@@ -162,7 +159,7 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 			const result = await shopListItem.save();
 			reply.send(result);
 		} catch (error) {
-			reply.status(404).send({ error: error.message });
+			reply.status(404).send({ error: "Error occured" });
 		}
 	}
 
@@ -211,7 +208,7 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 				reply.send(result);
 			}
 		} catch (error) {
-			reply.status(400).send({ error: error.message });
+			reply.status(400).send({ error: "Error occured" });
 		}
 	}
 	async function createRecipeAndIngredients(
@@ -466,7 +463,7 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 	});
 
 
-	/*----------------------------------- START of PUT ROUTES----------------------------------- */
+	/*----------------------------------- END of PUT ROUTES----------------------------------- */
 
 	/*----------------------------------- START of POST ROUTES----------------------------------- */
 
@@ -509,7 +506,7 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 					const user = await createUser(name, email);
 					reply.send(user);
 				} catch (error) {
-					reply.status(500).send({ error: error.message });
+					reply.status(500).send({ error: "Error occured" });
 				}
 			}
 		}
@@ -537,7 +534,7 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 				const result = await createRecipeAndIngredients(recipeName, dietType, cuisine, description, ingredients);
 				reply.send(result);
 			} catch (error) {
-				reply.status(500).send({ error: error.message });
+				reply.status(500).send({ error: "Error occured" });
 			}
 		}
 	});
@@ -675,7 +672,7 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 			}
 		}
 	});
-	
+
 
 	/*----------------------------------- END of POST ROUTES----------------------------------- */
 }
