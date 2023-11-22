@@ -1,69 +1,50 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import { Card, Table } from "react-bootstrap";
-import { Form } from "react-router-dom";
-import Cookies from "js-Cookie";
-// @ts-ignore
-const serverIP = import.meta.env.VITE_BACKEND_IP;
-// @ts-ignore
-const serverPort = import.meta.env.VITE_BACKEND_PORT;
-
-const serverUrl = `http://${serverIP}:${serverPort}`;
+import { SERVER_URL } from "./Config";
+import { getUserFromCookies, validateUserID } from "./UserAuthentication";
+import { DropdownSelector, daysOfWeeksOptions } from "./DropdownButton";
 
 export const MealPlanForDay = () => {
-  const [mealplanforuser, setmealplanforuser] = useState([]);
-  const [day, setDay] = useState([]);
-  const [dayState, setdayState] = useState(false);
-  let user_id = Cookies.get("user_id");
-  if (user_id !== undefined) user_id = user_id.split("|")[1];
-  const [userID, setUserID] = useState(user_id);
-  if (userID === undefined) {
-    alert("You must be logged in to view this page");
-    return <></>;
-  } else {
-    const handleDay = (e) => {
-      setDay(e);
-      setdayState(true);
+  const [mealPlanForUser, setMealPlanForUser] = useState([]);
+  const [selectedDay, setSelectedDay] = useState([]);
+  const [selectedDayState, setselectedDayState] = useState(false);
+
+  const userID = getUserFromCookies();
+  validateUserID();
+  const handleSelectedDay = (e) => {
+    setSelectedDay(e);
+    setselectedDayState(true);
+  };
+  useEffect(() => {
+    const fetchMealPlan = async () => {
+      const mealPlan = await axios.get(
+        `${SERVER_URL}/mealplan/${userID}/${selectedDay}`
+      );
+
+      setMealPlanForUser(await mealPlan.data);
     };
-    useEffect(() => {
-      const getMP = async () => {
-        const mealplan = await axios.get(
-          serverUrl + "/mealplan/" + userID.toString() + "/" + day.toString()
-        );
+    void fetchMealPlan();
+  }, [selectedDay, userID]);
 
-        setmealplanforuser(await mealplan.data);
-      };
-      void getMP();
-    }, [day, userID]);
-
-    return (
-      <>
-        <Row>
-          <DropdownButton
-            className="mt-5"
-            title="Day of Week"
-            onSelect={handleDay}>
-            <Dropdown.Item eventKey="monday">Monday</Dropdown.Item>
-            <Dropdown.Item eventKey="tuesday">Tuesday</Dropdown.Item>
-            <Dropdown.Item eventKey="wednesday">Wednesday</Dropdown.Item>
-            <Dropdown.Item eventKey="thursday">Thursday</Dropdown.Item>
-            <Dropdown.Item eventKey="friday">Friday</Dropdown.Item>
-            <Dropdown.Item eventKey="saturday">Saturday</Dropdown.Item>
-            <Dropdown.Item eventKey="Sunday">Sunday</Dropdown.Item>
-          </DropdownButton>
-          <h4>You selected {day}</h4>
-        </Row>
-        {dayState ? dayResults(mealplanforuser) : null}
-      </>
-    );
-  }
+  return (
+    <>
+      <Row>
+        <DropdownSelector
+          title="Day of Week"
+          options={daysOfWeeksOptions}
+          onSelect={handleSelectedDay}
+          selectedValue={selectedDay}
+        />
+        <h4>You selected {selectedDay}</h4>
+      </Row>
+      {selectedDayState ? selectedDayResults(mealPlanForUser) : null}
+    </>
+  );
 };
 
-const dayResults = (mealplanforuser) => {
+const selectedDayResults = (mealPlanForUser) => {
   return (
     <Card className="mt-3">
       <Card.Body>
@@ -77,11 +58,11 @@ const dayResults = (mealplanforuser) => {
             </tr>
           </thead>
           <tbody>
-            {mealplanforuser.map((mp) => (
-              <tr key={mp.id}>
-                <td>{mp.mealType}</td>
-                <td>{mp.dayOfWeek}</td>
-                <td>{mp.recipe.recipeName}</td>
+            {mealPlanForUser.map((mealTypeItem) => (
+              <tr key={mealTypeItem.id}>
+                <td>{mealTypeItem.mealType}</td>
+                <td>{mealTypeItem.dayOfWeek}</td>
+                <td>{mealTypeItem.recipe.recipeName}</td>
               </tr>
             ))}
           </tbody>

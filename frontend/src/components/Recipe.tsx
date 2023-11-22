@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Table } from "react-bootstrap";
-// @ts-ignore
-const serverIP = import.meta.env.VITE_BACKEND_IP;
-// @ts-ignore
-const serverPort = import.meta.env.VITE_BACKEND_PORT;
-
-const serverUrl = `http://${serverIP}:${serverPort}`;
+import { SERVER_URL } from "./Config";
+import { URLS } from "./ConstantsPaths";
 
 export const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -17,7 +13,7 @@ export const Recipes = () => {
        * Vite, however, contains modern tree shaking (removing unused parts)
        * So if you try swapping in our project, you'll find we only save 6 kilobytes
        */
-      const recipes = await axios.get(serverUrl + "/recipes");
+      const recipes = await axios.get(SERVER_URL + URLS.RECIPES);
 
       setRecipes(await recipes.data);
     };
