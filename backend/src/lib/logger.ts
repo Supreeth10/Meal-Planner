@@ -1,11 +1,14 @@
 /** @module Logger */
 import fs from "fs";
 
-const logDir = import.meta.env["VITE_LOGS_DIR"];
+const LOG_DIR_KEY = "VITE_LOGS_DIR";
+const PRETTY_TARGET = "pino-pretty";
+
+const logDirectory = import.meta.env[LOG_DIR_KEY];
 
 // Create directory to store logs if it doesn't exist
-if (!fs.existsSync(logDir)) {
-	fs.mkdirSync(logDir, {recursive: true});
+if (!fs.existsSync(logDirectory)) {
+	fs.mkdirSync(logDirectory, {recursive: true});
 }
 
 /**
@@ -16,17 +19,17 @@ const logger = import.meta.env.DEV
 	? {
 		transport: {
 
-			target: "pino-pretty",
+			target: PRETTY_TARGET,
 			options: {
 				translateTime: "HH:MM:ss.l",
 				ignore: "pid,hostname",
 			},
 		},
-		file: logDir + "/dev-logs.log",
+		file: logDirectory + "/dev-logs.log",
 	}
 	: {
 		level: "warn",
-		file: logDir + "/warn-logs.log",
+		file: logDirectory + "/warn-logs.log",
 	};
 
 export default logger;
