@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { Brackets } from "typeorm";
 
 type param = {
 	name: string;
@@ -57,4 +58,20 @@ export async function getMealPlan(app: FastifyInstance, reply: any, userid: stri
 	} else {
 		reply.send(mealPlan);
 	}
+}
+
+export async function deleteMealPlan(app: any, userId: string, conditions: Record<string, string>, reply: any) {
+	const query = app.db.mp
+		.createQueryBuilder("mp")
+		.where("userId = :id", { id: userId })
+		.andWhere(new Brackets(qb => {
+			for (const key in conditions) {
+				qb.andWhere(`${key} = :${key}`, { [key]: conditions[key] });
+			}
+		}))
+		.delete()
+		.execute();
+
+	const result: any = await query;
+	reply.send(result);
 }
