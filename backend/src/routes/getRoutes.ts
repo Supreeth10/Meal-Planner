@@ -64,7 +64,7 @@ export default async function getRoutes(app: FastifyInstance) {
 	app.get("/mealplan/:userid/:dayOfWeek", async (req: any, reply: any) => {
 		const userid = req.params.userid;
 		const dayOfWeek = req.params.dayOfWeek;
-		await getMealPlan(reply, userid, dayOfWeek);
+		await getMealPlan(app, reply, userid, dayOfWeek);
 	});
 
 	//GET shoppingList for a user
