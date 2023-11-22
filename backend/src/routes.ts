@@ -10,14 +10,10 @@ import { Ingredients } from "./db/models/ingredients";
 import { RecipeIngredientRel } from "./db/models/recipe_ingredient_rel";
 import { MealPlans } from "./db/models/meal_plans";
 import { ShoppingList } from "./db/models/shopping_list";
-import { Brackets } from "typeorm";
 import crypto from 'crypto';
 import getRoutes from "./routes/getRoutes";
+import delRoutes from "./routes/DeleteRoutes";
 
-type param = {
-	name: string;
-	value: string;
-};
 
 /**
  * App plugin where we construct our routes
@@ -28,26 +24,9 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 	// TODO: Refactor this in favor of fastify-cors
 	app.use(cors());
 
-
 	/*Helper functions*/
 	function generateUserId() {
 		return crypto.randomBytes(16).toString('hex');
-	}
-
-	async function deleteMealPlan(app: any, userId: string, conditions: Record<string, string>, reply: any) {
-		const query = app.db.mp
-			.createQueryBuilder("mp")
-			.where("userId = :id", { id: userId })
-			.andWhere(new Brackets(qb => {
-				for (const key in conditions) {
-					qb.andWhere(`${key} = :${key}`, { [key]: conditions[key] });
-				}
-			}))
-			.delete()
-			.execute();
-
-		const result: any = await query;
-		reply.send(result);
 	}
 
 	async function validateUserAndItemExistence(
@@ -243,50 +222,10 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 
 		return true;
 	}
-
-	/*----------------------------------- START of GET ROUTES----------------------------------- */
-
+	/*----------------------------------- START of ROUTES----------------------------------- */
 	getRoutes(app);
-
-	/*----------------------------------- END of GET ROUTES----------------------------------- */
-
-	/*----------------------------------- START of DELETE ROUTES----------------------------------- */
-	//DELETE user by id
-	app.delete("/users/:id", async (req: any, reply: any) => {
-		const id = req.params.id;
-		let user = await app.db.user.findOneByOrFail({
-			id: id,
-		});
-		let res = await user.remove();
-		reply.send(user);
-	});
-
-	//DELETE all mealplans for a particular user
-	app.delete("/mealplan/:userid", async (req: any, reply: any) => {
-		const userId = req.params.userid;
-		await deleteMealPlan(app, userId, {}, reply);
-	});
-
-	//DELETE a mealplans for a particular user based on dayOfWeek and mealType
-	app.delete(
-		"/mealplan/:userid/:dayOfWeek/:mealType",
-		async (req: any, reply: any) => {
-			const { userid, dayOfWeek, mealType } = req.params;
-			await deleteMealPlan(app, userid, { dayOfWeek, mealType }, reply);
-		}
-	);
-
-	//DELETE mealplan for a user based on dayOfWeek
-	app.delete("/mealplan/:userid/:dayOfWeek", async (req: any, reply: any) => {
-		const { userid, dayOfWeek } = req.params;
-		await deleteMealPlan(app, userid, { dayOfWeek }, reply);
-	});
-
-	/*----------------------------------- END of DELETE ROUTES----------------------------------- */
-
+	delRoutes(app);
 	/*----------------------------------- START of PUT ROUTES----------------------------------- */
-
-
 	// PUT ingredient's checked status to true for a user's shopping list
 	app.put<{
 		Body: {
