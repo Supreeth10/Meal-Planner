@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -66,14 +65,3 @@ export const MealPlanForm = () => {
     </>
   );
 };
-
-// Extracted Dropdown Selector Component
-// const DropdownSelector = ({ title, options, onSelect }) => (
-//   <DropdownButton title={title} onSelect={onSelect}>
-//     {options.map((option, index) => (
-//       <Dropdown.Item key={index} eventKey={option}>
-//         {option.charAt(0).toUpperCase() + option.slice(1)}
-//       </Dropdown.Item>
-//     ))}
-//   </DropdownButton>
-// );
