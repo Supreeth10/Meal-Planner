@@ -2,6 +2,12 @@ import { MealPlans } from "./db/models/meal_plans";
 import { ShoppingList } from "./db/models/shopping_list";
 import { FastifyInstance } from "fastify";
 import { Brackets } from "typeorm";
+import { User } from "./db/models/user";
+import crypto from 'crypto';
+import { Recipes } from "./db/models/recipes";
+import { Ingredients } from "./db/models/ingredients";
+import { RecipeIngredientRel } from "./db/models/recipe_ingredient_rel";
+
 
 type param = {
 	name: string;
@@ -200,4 +206,84 @@ export async function updateMealPlan(app: any, userId: number, mealType: string,
 	} catch (error) {
 		reply.status(400).send({ error: "Error occured" });
 	}
+}
+
+export async function createUser(name: string, email: string): Promise<User> {
+	const user = new User();
+	user.id = generateUserId();
+	user.name = name;
+	user.email = email;
+	return user.save();
+}
+
+function generateUserId() {
+	return crypto.randomBytes(16).toString('hex');
+}
+
+export async function createRecipeAndIngredients(
+	app: FastifyInstance,
+	recipeName: string,
+	dietType: string,
+	cuisine: string,
+	description: string,
+	ingredients: { ingName: string }[]
+): Promise<Recipes> {
+	const recipe = new Recipes();
+	recipe.recipeName = recipeName;
+	recipe.dietType = dietType;
+	recipe.cuisine = cuisine;
+	recipe.description = description;
+	const res = await recipe.save();
+
+	const promises = ingredients.map(async (ingredientData) => {
+		let ing = await app.db.ig.findOne({
+			where: {
+				ingName: ingredientData.ingName,
+			},
+		});
+
+		if (!ing) {
+			ing = new Ingredients();
+			ing.ingName = ingredientData.ingName;
+			await ing.save();
+		}
+
+		const recipeIngredient = new RecipeIngredientRel();
+		recipeIngredient.recipe = recipe;
+		recipeIngredient.ingredient = ing;
+		return recipeIngredient.save();
+	});
+
+	await Promise.all(promises);
+
+	return res;
+}
+
+export async function createMealPlan(app: FastifyInstance, userId: number, mealType: string, dayOfWeek: string, recipeId: number) {
+	const ings = await app.db.rpIngRel.find({
+		relations: { ingredient: true },
+		where: { recipe: { id: recipeId } },
+	});
+
+	const user = await app.db.user.findOne({ where: { id: userId.toString() } });
+	const recipe = await app.db.rp.findOne({ where: { id: recipeId } });
+
+	if (user && recipe) {
+		const mealPlan = new MealPlans();
+		mealPlan.user = user;
+		mealPlan.mealType = mealType;
+		mealPlan.dayOfWeek = dayOfWeek;
+		mealPlan.recipe = recipe;
+
+		const res = await mealPlan.save();
+
+		for (let i = 0; i < ings.length; i++) {
+			const shoppingList = new ShoppingList();
+			shoppingList.user = user;
+			shoppingList.ing = ings[i].ingredient;
+			await shoppingList.save();
+		}
+		return res;
+	}
+	return null;
 }
