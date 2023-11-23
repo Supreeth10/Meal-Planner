@@ -1,3 +1,5 @@
+import { MealPlans } from "./db/models/meal_plans";
+import { ShoppingList } from "./db/models/shopping_list";
 import { FastifyInstance } from "fastify";
 import { Brackets } from "typeorm";
 
@@ -74,4 +76,128 @@ export async function deleteMealPlan(app: any, userId: string, conditions: Recor
 
 	const result: any = await query;
 	reply.send(result);
+}
+
+export async function updateShoppingListStatus(app: any, userId: number, ingredientId: number, reply: any) {
+	try {
+		const { user, item: ingredient } = await validateUserAndItemExistence(
+			app,
+			userId,
+			ingredientId,
+			'ig'
+		);
+		console.log("Validated user and item:", user.id, ingredient.id);
+		const shopListItem = await validateShoppingListItemExistence(app, user.id, ingredient.id);
+		console.log("Validated shopping list item:", shopListItem);
+		shopListItem.check = true;
+		const result = await shopListItem.save();
+		console.log("Updated shopping list item:", result);
+		reply.send(result);
+	} catch (error) {
+		console.error('Error in updateShoppingListStatus:', error);
+		throw new Error('Failed to update shopping list status');
+	}
+}
+
+export async function validateShoppingListItemExistence(
+	app: any,
+	userId: number,
+	ingredientId: number
+): Promise<ShoppingList> {
+	try {
+
+		const shopListItem = await app.db.sl.findOne({
+			where: {
+				check: false,
+				user: { id: userId },
+				ing: { id: ingredientId },
+			},
+		});
+		console.log("ID", shopListItem.id);
+		if (!shopListItem) {
+			throw new Error(`User doesn't have this ingredient in their shopping list`);
+		}
+		console.log("Validated shopping list item:", shopListItem);
+		return shopListItem;
+	}
+	catch (error) {
+		console.error('Error in validateShoppingListItemExistence:', error);
+		throw new Error('Failed to validate shopping list item existence');
+	}
+}
+
+export async function validateUserAndItemExistence(
+	app: any,
+	userId: number,
+	itemId: number,
+	itemEntity: any
+): Promise<{ user: any; item: any }> {
+	try {
+		const user = await app.db.user.findOne({
+			where: { id: userId },
+		});
+
+		const item = await app.db[itemEntity].findOne({
+			where: { id: itemId },
+		});
+
+		if (!user || !item) {
+			throw new Error(`User or ${itemEntity} does not exist`);
+		}
+		console.log("Validated user and item", user, item);
+		return { user, item };
+	}
+	catch (error) {
+		console.error('Error in validateUserAndItemExistence:', error);
+		throw new Error('Failed to validate user and item existence');
+	}
+}
+
+export async function updateMealPlan(app: any, userId: number, mealType: string, dayOfWeek: string, recipeId: number, reply: any) {
+	try {
+		const { user, item: recipe } = await validateUserAndItemExistence(app, userId, recipeId, 'rp');
+
+		const existingMealPlan = await app.db.mp.findOne({
+			where: {
+				user: { id: userId },
+				dayOfWeek,
+				mealType,
+			},
+		});
+
+		if (existingMealPlan) {
+			existingMealPlan.recipe = recipe;
+			const result = await existingMealPlan.save();
+			reply.send(result);
+		} else {
+			const errMsg = {
+				error: `There doesn't exist a recipe for ${dayOfWeek} ${mealType} in this user's meal plan. Please add this meal plan first.`,
+			};
+			reply.status(400).send(errMsg);
+
+			const ingredients = await app.db.rpIngRel.find({
+				relations: { ingredient: true },
+				where: { recipe: { id: recipeId } },
+			});
+
+			const mealPlan = new MealPlans();
+			mealPlan.user = user;
+			mealPlan.mealType = mealType;
+			mealPlan.dayOfWeek = dayOfWeek;
+			mealPlan.recipe = recipe;
+
+			const result = await mealPlan.save();
+
+			for (const ing of ingredients) {
+				const shoppingList = new ShoppingList();
+				shoppingList.user = user;
+				shoppingList.ing = ing.ingredient;
+				await shoppingList.save();
+			}
+
+			reply.send(result);
+		}
+	} catch (error) {
+		reply.status(400).send({ error: "Error occured" });
+	}
 }

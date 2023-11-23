@@ -13,6 +13,7 @@ import { ShoppingList } from "./db/models/shopping_list";
 import crypto from 'crypto';
 import getRoutes from "./routes/getRoutes";
 import delRoutes from "./routes/DeleteRoutes";
+import putRoutes from "./routes/putRoutes";
 
 
 /**
@@ -27,65 +28,6 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 	/*Helper functions*/
 	function generateUserId() {
 		return crypto.randomBytes(16).toString('hex');
-	}
-
-	async function validateUserAndItemExistence(
-		app: any,
-		userId: number,
-		itemId: number,
-		itemEntity: any
-	): Promise<{ user: any; item: any }> {
-		const user = await app.db.user.findOne({
-			where: { id: userId },
-		});
-
-		const item = await app.db[itemEntity].findOne({
-			where: { id: itemId },
-		});
-
-		if (!user || !item) {
-			throw new Error(`User or ${itemEntity} does not exist`);
-		}
-
-		return { user, item };
-	}
-
-	async function validateShoppingListItemExistence(
-		app: any,
-		userId: number,
-		ingredientId: number
-	): Promise<ShoppingList> {
-		const { user, item: ingredient } = await validateUserAndItemExistence(
-			app,
-			userId,
-			ingredientId,
-			'ig'
-		);
-
-		const shopListItem = await app.db.sl.findOne({
-			where: {
-				check: false,
-				user: { id: userId },
-				ing: { id: ingredientId },
-			},
-		});
-
-		if (!shopListItem) {
-			throw new Error(`User doesn't have this ingredient in their shopping list`);
-		}
-
-		return shopListItem;
-	}
-
-	async function updateShoppingListStatus(app: any, userId: number, ingredientId: number, reply: any) {
-		try {
-			const shopListItem = await validateShoppingListItemExistence(app, userId, ingredientId);
-			shopListItem.check = true;
-			const result = await shopListItem.save();
-			reply.send(result);
-		} catch (error) {
-			reply.status(404).send({ error: "Error occured" });
-		}
 	}
 
 	async function updateMealPlan(app: any, userId: number, mealType: string, dayOfWeek: string, recipeId: number, reply: any) {
@@ -225,46 +167,8 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 	/*----------------------------------- START of ROUTES----------------------------------- */
 	getRoutes(app);
 	delRoutes(app);
-	/*----------------------------------- START of PUT ROUTES----------------------------------- */
-	// PUT ingredient's checked status to true for a user's shopping list
-	app.put<{
-		Body: {
-			userId: number;
-			ingredientId: number;
-		};
-		Reply: any;
-	}>("/shoppinglist", async (req: any, reply: FastifyReply) => {
-		const { userId, ingredientId } = req.body;
-		if (!userId || !ingredientId) {
-			reply.status(400).send({ error: "userId and ingredientId are required" });
-		} else {
-			await updateShoppingListStatus(app, userId, ingredientId, reply);
-		}
-	});
-
-	// PUT existing mealplan for a user to update the recipe
-	app.put<{
-		Body: {
-			userId: number;
-			mealType: string;
-			dayOfWeek: string;
-			recipeId: number;
-		};
-		Reply: any;
-	}>("/mealplan", async (req: any, reply: FastifyReply) => {
-		const { userId, mealType, dayOfWeek, recipeId } = req.body;
-		if (!userId || !mealType || !dayOfWeek || !recipeId) {
-			reply.status(400).send({ error: "userId, mealType, dayOfWeek, and recipeId are required" });
-		} else {
-			await updateMealPlan(app, userId, mealType, dayOfWeek, recipeId, reply);
-		}
-	});
-
-
-	/*----------------------------------- END of PUT ROUTES----------------------------------- */
-
+	putRoutes(app);
 	/*----------------------------------- START of POST ROUTES----------------------------------- */
-
 	//POST new user
 	app.post<{
 		Body: {
