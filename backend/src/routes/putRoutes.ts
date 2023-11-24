@@ -1,4 +1,4 @@
-import { handleNotFoundResponse, getRecipes, getMealPlan, updateShoppingListStatus, updateMealPlan } from '../HelperFunctions';
+import { updateShoppingListStatus, updateMealPlan } from '../HelperFunctions';
 import { FastifyInstance, FastifyReply } from "fastify";
 
 export default async function putRoutes(app: FastifyInstance) {
