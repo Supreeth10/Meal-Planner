@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Cookies from "js-Cookie";
-import { Card, Table } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { SERVER_URL } from "./Config";
 import { URLS } from "./ConstantsPaths";
 import { getUserFromCookies, validateUserID } from "./UserAuthentication";
+import TableComponent from "ui_components/TableComponent";
 
 export const Users = () => {
   const [users, setUsers] = useState([]);
-  // Get user ID from cookies
   const userID = getUserFromCookies();
+  const headers = ["Name", "Email"];
+  const rows = users.map((user) => [user.name, user.email]);
   validateUserID();
   useEffect(() => {
     const getUsers = async () => {
@@ -30,22 +31,7 @@ export const Users = () => {
     <Card className="mt-3">
       <Card.Body>
         <Card.Title>User Details</Card.Title>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TableComponent headers={headers} rows={rows} />
       </Card.Body>
     </Card>
   );

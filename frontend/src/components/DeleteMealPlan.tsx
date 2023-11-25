@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import axios from "axios";
 import { SERVER_URL } from "./Config";
 import { getUserFromCookies, validateUserID } from "./UserAuthentication";
-import { daysOfWeeksOptions, mealTypeOptions, DropdownSelectors } from "./DropdownButton";
+import { daysOfWeeksOptions, mealTypeOptions, DropdownSelectors } from "../ui_components/DropdownButton";
 
 export const MealPlanForm = () => {
   const [selectedMealType, setSelectedMealtype] = useState([]);
