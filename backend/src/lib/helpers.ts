@@ -35,7 +35,7 @@ export function getModeFromArgs() {
 }
 export function GenerateRandomNumber(ans: number) {
 	return Math.floor(Math.random() * ans + 1);
-  }
+}
 
 // in-source testing
 if (import.meta.vitest) {

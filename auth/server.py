@@ -45,12 +45,11 @@ def home():
 def callback():
     token = oauth.auth0.authorize_access_token()
     session["user"] = token
-    resp = make_response(redirect('http://localhost:5173'))
-    temp = token['userinfo']
-    temp2 = temp['sub']
-    resp.set_cookie('user_id', temp2)
-    resp.set_cookie('user_token', token['access_token'])
-    return resp
+    response = make_response(redirect('http://localhost:5173'))
+    user_info = token['userinfo']
+    user_id = user_info['sub']
+    user_token = token['access_token']
+    return manage_cookies(response, set_cookies={'user_id': user_id, 'user_token': user_token})
 
 
 @app.route("/login")
@@ -63,10 +62,16 @@ def login():
 @app.route("/logout")
 def logout():
     session.clear()
-    resp = make_response(redirect('http://localhost:5173'))
-    resp.set_cookie('user_id', expires=0)
-    resp.set_cookie('user_token', expires=0)
-    return resp
+    response = make_response(redirect('http://localhost:5173'))
+    return manage_cookies(response, clear_cookies=['user_id', 'user_token'])
+
+def manage_cookies(response, set_cookies={}, clear_cookies=[]):
+    """Sets and clears cookies."""
+    for name, value in set_cookies.items():
+        response.set_cookie(name, value)
+    for name in clear_cookies:
+        response.set_cookie(name, expires=0)
+    return response
 
 
 if __name__ == "__main__":
