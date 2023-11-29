@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { SERVER_URL } from "./Config";
 import { getUserFromCookies, validateUserID } from "./UserAuthentication";
+import { TableComponent } from "../ui_components/TableComponent";
 
 export const MealPlanForUser = () => {
   const [mealPlanForUser, setMealPlanForUser] = useState([]);
-
+  const headers = ["Meal Type", "Day", "Recipe"];
+  const rows = mealPlanForUser.map((mp) => [mp.mealType, mp.dayOfWeek, mp.recipe.recipeName]);
   const userID = getUserFromCookies();
   validateUserID();
   useEffect(() => {
@@ -25,23 +27,6 @@ export const MealPlanForUser = () => {
   }, [userID]);
 
   return (
-    <table className="table table-bordered table-striped">
-      <thead>
-        <tr>
-          <th scope="col">Meal Type</th>
-          <th scope="col">Day</th>
-          <th scope="col">Recipe</th>
-        </tr>
-      </thead>
-      <tbody>
-        {mealPlanForUser.map((mealPlanItem) => (
-          <tr key={mealPlanItem.id}>
-            <td>{mealPlanItem.mealType}</td>
-            <td>{mealPlanItem.dayOfWeek}</td>
-            <td>{mealPlanItem.recipe.recipeName}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <TableComponent headers={headers} rows={rows} />
   );
 };

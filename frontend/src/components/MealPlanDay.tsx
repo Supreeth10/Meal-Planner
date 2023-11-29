@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Row from "react-bootstrap/Row";
-import { Card, Table } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { SERVER_URL } from "./Config";
 import { getUserFromCookies, validateUserID } from "./UserAuthentication";
-import { DropdownSelector, daysOfWeeksOptions } from "./DropdownButton";
+import { DropdownSelector, daysOfWeeksOptions } from "../ui_components/DropdownButton";
+import { TableComponent } from "../ui_components/TableComponent";
 
 export const MealPlanForDay = () => {
   const [mealPlanForUser, setMealPlanForUser] = useState([]);
@@ -45,28 +46,13 @@ export const MealPlanForDay = () => {
 };
 
 const selectedDayResults = (mealPlanForUser) => {
+  const headers = ["Meal Type", "Day", "Recipe"];
+  const rows = mealPlanForUser.map((mp) => [mp.mealType, mp.dayOfWeek, mp.recipe.recipeName]);
   return (
     <Card className="mt-3">
       <Card.Body>
         <Card.Title>Meal Plan</Card.Title>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Meal Type</th>
-              <th>Day</th>
-              <th>Recipe</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mealPlanForUser.map((mealTypeItem) => (
-              <tr key={mealTypeItem.id}>
-                <td>{mealTypeItem.mealType}</td>
-                <td>{mealTypeItem.dayOfWeek}</td>
-                <td>{mealTypeItem.recipe.recipeName}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TableComponent headers={headers} rows={rows} />
       </Card.Body>
     </Card>
   );

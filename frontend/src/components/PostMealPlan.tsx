@@ -5,7 +5,7 @@ import {
   DropdownSelector,
   daysOfWeeksOptions,
   mealTypeOptions,
-} from "./DropdownButton";
+} from "../ui_components/DropdownButton";
 import { Card } from "react-bootstrap";
 import axios from "axios";
 import "../Dashboard.css";

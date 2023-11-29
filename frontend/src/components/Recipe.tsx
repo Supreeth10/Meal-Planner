@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Table } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { SERVER_URL } from "./Config";
 import { URLS } from "./ConstantsPaths";
+import TableComponent from "../ui_components/TableComponent";
 
 export const Recipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -20,32 +21,14 @@ export const Recipes = () => {
     void getRecipes();
   }, []);
 
+  const headers=['ID', 'Recipe Name', 'Diet Type', 'Cuisine', 'Description'];
+  const rows = recipes.map((recipe) => [recipe.id, recipe.recipeName, recipe.dietType, recipe.cuisine, recipe.description]);
+
   return (
     <Card className="mt-3">
       <Card.Body>
         <Card.Title>Recipes</Card.Title>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Recipe ID</th>
-              <th>Recipe Name</th>
-              <th>Diet Type</th>
-              <th>Cuisine</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recipes.map((recipe) => (
-              <tr key={recipe.id}>
-                <td>{recipe.id}</td>
-                <td>{recipe.recipeName}</td>
-                <td>{recipe.dietType}</td>
-                <td>{recipe.cuisine}</td>
-                <td>{recipe.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TableComponent headers={headers} rows={rows} />
       </Card.Body>
     </Card>
   );
