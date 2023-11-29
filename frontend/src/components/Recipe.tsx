@@ -3,7 +3,7 @@ import axios from "axios";
 import { Card } from "react-bootstrap";
 import { SERVER_URL } from "./Config";
 import { URLS } from "./ConstantsPaths";
-import TableComponent from "ui_components/TableComponent";
+import TableComponent from "../ui_components/TableComponent";
 
 export const Recipes = () => {
   const [recipes, setRecipes] = useState([]);

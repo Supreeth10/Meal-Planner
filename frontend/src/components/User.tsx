@@ -4,7 +4,7 @@ import { Card } from "react-bootstrap";
 import { SERVER_URL } from "./Config";
 import { URLS } from "./ConstantsPaths";
 import { getUserFromCookies, validateUserID } from "./UserAuthentication";
-import TableComponent from "ui_components/TableComponent";
+import TableComponent from "../ui_components/TableComponent";
 
 export const Users = () => {
   const [users, setUsers] = useState([]);
