@@ -1,6 +1,11 @@
 import { updateShoppingListStatus, updateMealPlan } from '../HelperFunctions';
 import { FastifyInstance, FastifyReply } from "fastify";
 
+/**
+ * This module exports an async function that sets up PUT routes for the Fastify application.
+ * @module PutRoutes
+ * @param {FastifyInstance} app - The Fastify server instance.
+ */
 export default async function putRoutes(app: FastifyInstance) {
 
 	// PUT ingredient's checked status to true for a user's shopping list
