@@ -12,18 +12,11 @@ import { ShoppingList } from "../db/models/shopping_list";
 import { Ingredients } from "../db/models/ingredients";
 import { RecipeIngredientRel } from "../db/models/recipe_ingredient_rel";
 
-/** This is AWESOME - we're telling typescript we're adding our own "thing" to base 'app', so we get FULL IDE/TS support */
+/** adding our own "thing" to base 'app', so we get FULL IDE/TS support */
 declare module "fastify" {
 	interface FastifyInstance {
 		db: DBConfigOpts;
 	}
-
-	// interface FastifyRequest {
-	// 	myPluginProp: string
-	// }
-	// interface FastifyReply {
-	// 	myPluginProp: number
-	// }
 }
 
 interface DBConfigOpts {
@@ -46,10 +39,6 @@ const DbPlugin = fp(
 		const dataSourceConnection = AppDataSource;
 
 		await dataSourceConnection.initialize();
-
-		// this object will be accessible from any fastify server instance
-		// app.status(200).send()
-		// app.db.user
 		app.decorate("db", {
 			connection: dataSourceConnection,
 			user: dataSourceConnection.getRepository(User),
