@@ -3,6 +3,10 @@ import TypeORM from "typeorm";
 import { Recipes } from "./recipes";
 import { User } from "./user";
 
+/**
+ * Class representing MealPlans table in the database.
+ * @remarks This class is a TypeORM entity.
+ */
 @TypeORM.Entity()
 export class MealPlans extends TypeORM.BaseEntity {
   @TypeORM.PrimaryGeneratedColumn()
