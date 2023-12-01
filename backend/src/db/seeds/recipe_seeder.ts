@@ -19,7 +19,9 @@ enum DietType {
 	pescatarian = 3,
 	NonVegetarian = 4,
 }
-
+/**
+ * Class responsible for seeding the recipe data.
+ */
 export class RecipeSeeder extends Seeder {
 	/**
    * Runs the IPHistory table's seed
@@ -41,7 +43,10 @@ export class RecipeSeeder extends Seeder {
 			app.log.error("Error in seeding recipe: ", error);
 		}
 	}
-
+	/**
+	 * Seeds a recipe for a user.
+	 * @returns {Promise<void>}
+	 */
 	private async seedRecipeForUser() {
 		let recipe = new Recipes();
 		recipe.recipeName = faker.lorem.words(3);

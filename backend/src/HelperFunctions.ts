@@ -13,14 +13,23 @@ type param = {
 	name: string;
 	value: string;
 };
-
+/**
+ * Handles not found responses.
+ * @param reply - The reply object from Fastify.
+ * @param params - The parameters to include in the error message.
+ */
 export async function handleNotFoundResponse(reply: any, params: param[]) {
 	let errMsg = {
 		error: `No record found for ${params.map(param => `${param.name}: ${param.value}`).join(', ')}`,
 	};
 	reply.status(404).send(errMsg);
 }
-
+/**
+ * Gets recipes based on provided parameters.
+ * @param app - The Fastify instance.
+ * @param reply - The reply object from Fastify.
+ * @param params - The parameters to use for the query.
+ */
 export async function getRecipes(app: FastifyInstance, reply: any, params: { name: string; value: any }[]) {
 	const whereClause: { [key: string]: any } = {};
 
@@ -39,6 +48,15 @@ export async function getRecipes(app: FastifyInstance, reply: any, params: { nam
 	}
 }
 
+/**
+ * Retrieves the meal plan for a specific user and day of the week.
+ * If `dayOfWeek` is not provided, retrieves the meal plan for all days of the week.
+ * @param app - The Fastify instance.
+ * @param reply - The reply object.
+ * @param userid - The ID of the user.
+ * @param dayOfWeek - Optional. The day of the week for which to retrieve the meal plan.
+ * @returns A Promise that resolves to the meal plan.
+ */
 export async function getMealPlan(app: FastifyInstance, reply: any, userid: string, dayOfWeek?: string) {
 	let whereClause: any = {
 		user: {
@@ -68,6 +86,15 @@ export async function getMealPlan(app: FastifyInstance, reply: any, userid: stri
 	}
 }
 
+/**
+ * Deletes a meal plan based on the given conditions.
+ * 
+ * @param app - The application object.
+ * @param userId - The ID of the user.
+ * @param conditions - The conditions to filter the meal plan.
+ * @param reply - The reply object to send the result.
+ * @returns A promise that resolves with the result of the deletion.
+ */
 export async function deleteMealPlan(app: any, userId: string, conditions: Record<string, string>, reply: any) {
 	const query = app.db.mp
 		.createQueryBuilder("mp")
@@ -84,6 +111,17 @@ export async function deleteMealPlan(app: any, userId: string, conditions: Recor
 	reply.send(result);
 }
 
+
+
+/**
+ * Updates the status of a shopping list item.
+ * 
+ * @param app - The application object.
+ * @param userId - The ID of the user.
+ * @param ingredientId - The ID of the ingredient.
+ * @param reply - The reply object.
+ * @returns The updated shopping list item.
+ */
 export async function updateShoppingListStatus(app: any, userId: number, ingredientId: number, reply: any) {
 	try {
 		const { user, item: ingredient } = await validateUserAndItemExistence(
@@ -105,6 +143,15 @@ export async function updateShoppingListStatus(app: any, userId: number, ingredi
 	}
 }
 
+/**
+ * Validates the existence of a shopping list item for a given user and ingredient.
+ * 
+ * @param app - The application object.
+ * @param userId - The ID of the user.
+ * @param ingredientId - The ID of the ingredient.
+ * @returns A Promise that resolves to the validated shopping list item.
+ * @throws An error if the user doesn't have the ingredient in their shopping list or if there is an error during validation.
+ */
 export async function validateShoppingListItemExistence(
 	app: any,
 	userId: number,
@@ -132,6 +179,15 @@ export async function validateShoppingListItemExistence(
 	}
 }
 
+/**
+ * Validates the existence of a user and an item in the database.
+ * @param app - The application object.
+ * @param userId - The ID of the user.
+ * @param itemId - The ID of the item.
+ * @param itemEntity - The entity name of the item.
+ * @returns A promise that resolves to an object containing the user and item if they exist.
+ * @throws An error if the user or item does not exist.
+ */
 export async function validateUserAndItemExistence(
 	app: any,
 	userId: number,
@@ -159,6 +215,18 @@ export async function validateUserAndItemExistence(
 	}
 }
 
+/**
+ * Updates the meal plan for a user by adding or updating a recipe for a specific meal type and day of the week.
+ * If the meal plan already exists, the recipe will be updated. If not, a new meal plan will be created.
+ * @param app - The application object.
+ * @param userId - The ID of the user.
+ * @param mealType - The type of the meal (e.g., breakfast, lunch, dinner).
+ * @param dayOfWeek - The day of the week (e.g., Monday, Tuesday, Wednesday).
+ * @param recipeId - The ID of the recipe.
+ * @param reply - The reply object to send the response.
+ * @returns The updated or newly created meal plan.
+ * @throws If there is an error during the process.
+ */
 export async function updateMealPlan(app: any, userId: number, mealType: string, dayOfWeek: string, recipeId: number, reply: any) {
 	try {
 		const { user, item: recipe } = await validateUserAndItemExistence(app, userId, recipeId, 'rp');
@@ -208,6 +276,12 @@ export async function updateMealPlan(app: any, userId: number, mealType: string,
 	}
 }
 
+/**
+ * Creates a new user with the given name and email.
+ * @param name - The name of the user.
+ * @param email - The email of the user.
+ * @returns A Promise that resolves to the created User object.
+ */
 export async function createUser(name: string, email: string): Promise<User> {
 	const user = new User();
 	user.id = generateUserId();
@@ -216,10 +290,25 @@ export async function createUser(name: string, email: string): Promise<User> {
 	return user.save();
 }
 
+/**
+ * Generates a unique user ID.
+ * @returns {string} The generated user ID.
+ */
 function generateUserId() {
 	return crypto.randomBytes(16).toString('hex');
 }
 
+/**
+ * Creates a recipe and its associated ingredients.
+ * 
+ * @param app - The Fastify instance.
+ * @param recipeName - The name of the recipe.
+ * @param dietType - The diet type of the recipe.
+ * @param cuisine - The cuisine of the recipe.
+ * @param description - The description of the recipe.
+ * @param ingredients - An array of ingredient objects, each containing the ingredient name.
+ * @returns A Promise that resolves to the created recipe.
+ */
 export async function createRecipeAndIngredients(
 	app: FastifyInstance,
 	recipeName: string,
@@ -259,6 +348,16 @@ export async function createRecipeAndIngredients(
 	return res;
 }
 
+/**
+ * Creates a meal plan for a user.
+ * 
+ * @param app - The Fastify instance.
+ * @param userId - The ID of the user.
+ * @param mealType - The type of meal (e.g., breakfast, lunch, dinner).
+ * @param dayOfWeek - The day of the week for the meal plan.
+ * @param recipeId - The ID of the recipe.
+ * @returns The created meal plan if successful, otherwise null.
+ */
 export async function createMealPlan(app: FastifyInstance, userId: number, mealType: string, dayOfWeek: string, recipeId: number) {
 	const ings = await app.db.rpIngRel.find({
 		relations: { ingredient: true },

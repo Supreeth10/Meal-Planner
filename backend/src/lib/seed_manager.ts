@@ -16,12 +16,13 @@ export abstract class Seeder {
 }
 
 /**
- * Class that manages all Seeder-related duties.
- * Right now, simply runs every Seeder's seed sequentially
+ * Seed Manager class responsible for performing seed on all Seeder files.
  */
 class SeedMgr {
 	/**
-	 * Performs seed on all Seeder files
+	 * Performs seed on all Seeder files.
+	 * @param app - The FastifyInstance object.
+	 * @param options - The SeederOptionsType object.
 	 */
 	async seedAll(app: FastifyInstance, options: SeederOptionsType) {
 		// Go through every seeder included in our options (See index.ts)

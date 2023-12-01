@@ -4,3 +4,5 @@
 /backend/buildTypeorm/
 /backend/build/
 node_modules/
+/docs
+frontend/docs
