@@ -4,7 +4,8 @@ import { RecipeIngredientRel } from "./recipe_ingredient_rel";
 import { ShoppingList } from "./shopping_list";
 
 /**
- *  Class representing Ingredients table
+ *  Class representing Ingredients table in the database.
+ *  @remarks This class is a TypeORM entity.
  */
 @TypeORM.Entity()
 export class Ingredients extends TypeORM.BaseEntity {
@@ -17,7 +18,7 @@ export class Ingredients extends TypeORM.BaseEntity {
   })
   ingName: string;
 
-  @TypeORM.OneToMany((type) => ShoppingList, (sl: ShoppingList) => sl.ing)
+  @TypeORM.OneToMany(() => ShoppingList, (sl: ShoppingList) => sl.ing)
   slId: TypeORM.Relation<ShoppingList[]>;
 
   @TypeORM.OneToMany(

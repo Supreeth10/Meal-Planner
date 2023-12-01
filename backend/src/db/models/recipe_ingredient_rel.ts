@@ -4,6 +4,10 @@ import { Ingredients } from "./ingredients";
 import { Recipes } from "./recipes";
 
 
+/**
+ * Class representing RecipeIngredientRel table in the database.
+ * @remarks This class is a TypeORM entity.
+ */
 @TypeORM.Entity()
 export class RecipeIngredientRel extends TypeORM.BaseEntity {
   @TypeORM.PrimaryGeneratedColumn()

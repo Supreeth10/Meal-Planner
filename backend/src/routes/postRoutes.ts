@@ -2,8 +2,14 @@ import { FastifyInstance, FastifyReply } from "fastify";
 import { createUser, createRecipeAndIngredients, createMealPlan } from "../HelperFunctions";
 import { ShoppingList } from "../db/models/shopping_list";
 
-
+/**
+ * This module exports an async function that sets up POST routes for the Fastify application.
+ * @module PostRoutes
+ * @param {FastifyInstance} app - The Fastify server instance.
+ */
 export default async function postRoutes(app: FastifyInstance) {
+
+	//POST new user
 	app.post<{
 		Body: {
 			name: string;
@@ -200,7 +206,6 @@ export default async function postRoutes(app: FastifyInstance) {
 					let shoppingList = new ShoppingList();
 					shoppingList.user = user;
 					shoppingList.ing = ingredient;
-					//not setting checked cause it is false by default
 					let res = await shoppingList.save();
 					reply.send(res);
 				}

@@ -3,6 +3,10 @@ import TypeORM from "typeorm";
 import { Ingredients } from "./ingredients";
 import { User } from "./user";
 
+/**
+ * Class representing ShoppingList table in the database.
+ * @remarks This class is a TypeORM entity.
+ */
 @TypeORM.Entity()
 export class ShoppingList extends TypeORM.BaseEntity {
   @TypeORM.PrimaryGeneratedColumn()

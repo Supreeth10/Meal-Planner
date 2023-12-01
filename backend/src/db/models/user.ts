@@ -4,6 +4,10 @@ import { IPHistory } from "./ip_history";
 import { MealPlans } from "./meal_plans";
 import { ShoppingList } from "./shopping_list";
 
+/**
+ * Class representing Users table in the database.
+ * @remarks This class is a TypeORM entity.
+ */
 @TypeORM.Entity({ name: "users" })
 export class User extends TypeORM.BaseEntity {
   @TypeORM.PrimaryColumn()
