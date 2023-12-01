@@ -6,11 +6,15 @@ import { faker } from "@faker-js/faker";
 import { Ingredients } from "../models/ingredients";
 import { RecipeIngredientRel } from "../models/recipe_ingredient_rel";
 
+
+/**
+ * Class responsible for seeding the ingredients table and the many-to-many relation table.
+ */
 export class IngredientsSeeder extends Seeder {
 	/**
 	 * Runs the IPHistory table's seed
 	 * @function
-	 * @param {FastifyInstance} app
+	 * @param {FastifyInstance} app- The FastifyInstance object representing the Fastify application.
 	 * @returns {Promise<void>}
 	 */
 
@@ -30,7 +34,12 @@ export class IngredientsSeeder extends Seeder {
 			app.log.error("Error in seeding ingredients: ", error);
 		}
 	}
-
+	/**
+	 * Seeds the ingredients for a given recipe.
+	 * @function
+	 * @param {any} recipe - The recipe object for which ingredients need to be seeded.
+	 * @returns {Promise<void>}
+	 */
 	private async seedIngredientsForRecipe(recipe: any) {
 		const INGREDIENTS_PER_RECIPE = 5;
 		for (let i = 0; i < INGREDIENTS_PER_RECIPE; i++) {

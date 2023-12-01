@@ -2,9 +2,10 @@
 import { User } from "../models/user";
 import { Seeder } from "../../lib/seed_manager";
 import { FastifyInstance } from "fastify";
-
 /**
- * UserSeeder class - Model class for interacting with "users" table
+ * Class representing the UserSeeder.
+ * @class
+ * @extends Seeder
  */
 export class UserSeeder extends Seeder {
 	/**
@@ -17,7 +18,13 @@ export class UserSeeder extends Seeder {
 		app.log.info("Seeding Users...");
 		await this.seedUsers(app);
 	}
-
+	/**
+	 * Seeds the users.
+	 * @async
+	 * @function
+	 * @param {FastifyInstance} app - The FastifyInstance object.
+	 * @returns {Promise<void>}
+	 */
 	async seedUsers(app: FastifyInstance) {
 		await app.db.user.delete({});
 		let userIds = [
@@ -30,7 +37,16 @@ export class UserSeeder extends Seeder {
 			await this.createUser(id, index, userEmails[index], app);
 		}
 	}
-
+	/**
+	 * Creates a user.
+	 * @async
+	 * @function
+	 * @param {any} id - The user ID.
+	 * @param {any} index - The index.
+	 * @param {any} email - The user email.
+	 * @param {FastifyInstance} app - The FastifyInstance object.
+	 * @returns {Promise<void>}
+	 */
 	async createUser(id: any, index: any, email: any, app: FastifyInstance) {
 		let user = new User();
 		user.id = id;

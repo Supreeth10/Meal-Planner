@@ -8,8 +8,7 @@ import { FastifyInstance } from "fastify";
 import { Recipes } from "../models/recipes";
 import { GenerateRandomNumber } from "../../lib/helpers";
 
-// note here that using faker makes testing a bit...hard
-// We can set a particular seed for faker, then use it later in our testing!
+
 faker.seed(100);
 
 enum DayOfWeek {
@@ -29,7 +28,7 @@ enum MealType {
 }
 
 /**
- * Seeds the ip_history table
+ * Seeder class for MealPlans table
  */
 export class MealPlansSeeder extends Seeder {
 	/**
@@ -54,7 +53,12 @@ export class MealPlansSeeder extends Seeder {
 			app.log.error("Error in seeding MealPlan: ", error);
 		}
 	}
-
+	/**
+	 * Seeds the MealPlan for a specific user
+	 * @function
+	 * @param {any} user - The user object
+	 * @returns {Promise<void>}
+	 */
 	private async seedMealPlanForUser(user: any) {
 		const dayNames = Object.values(DayOfWeek).filter(value => isNaN(Number(value)));
 		for (let dayOfWeek of dayNames) {

@@ -4,6 +4,9 @@ import { FastifyInstance } from "fastify";
 import { User } from "../models/user";
 import { ShoppingList } from "../models/shopping_list";
 
+/**
+ * Seeder class for populating the shopping list table with data.
+ */
 export class ShoppingListSeeder extends Seeder {
 	/**
 	 * Runs the IPHistory table's seed
@@ -32,7 +35,13 @@ export class ShoppingListSeeder extends Seeder {
 		}
 		app.log.info("Finished seeding ingredients");
 	}
-
+	/**
+	 * Finds the meal plans for a given user.
+	 * @function
+	 * @param {any} userId - The ID of the user.
+	 * @param {FastifyInstance} app - The FastifyInstance object representing the Fastify application.
+	 * @returns {Promise<any[]>} - An array of meal plans.
+	 */
 	async findMealPlans(userId: any, app: FastifyInstance) {
 		return app.db.mp.find({
 			relations: {
@@ -45,7 +54,13 @@ export class ShoppingListSeeder extends Seeder {
 			},
 		});
 	}
-
+	/**
+	 * Finds the ingredients for a given recipe.
+	 * @function
+	 * @param {any} recipeId - The ID of the recipe.
+	 * @param {FastifyInstance} app - The FastifyInstance object representing the Fastify application.
+	 * @returns {Promise<any[]>} - An array of ingredients.
+	 */
 	async findIngredients(recipeId: any, app: FastifyInstance) {
 		return app.db.rpIngRel.find({
 			relations: {

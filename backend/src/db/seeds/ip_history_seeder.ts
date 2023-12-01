@@ -6,12 +6,11 @@ import { IPHistory } from "../models/ip_history";
 import { User } from "../models/user";
 import { FastifyInstance } from "fastify";
 
-// note here that using faker makes testing a bit...hard
-// We can set a particular seed for faker, then use it later in our testing!
+
 faker.seed(100);
 
 /**
- * Seeds the ip_history table
+ * Seeder class for populating the IPHistory table.
  */
 export class IPHistorySeeder extends Seeder {
 
@@ -34,14 +33,23 @@ export class IPHistorySeeder extends Seeder {
 			app.log.error("Error in seeding IP history: ", error);
 		}
 	}
-
+	/**
+	 * Seeds IP history for a specific user.
+	 * @param {any} user - The user object.
+	 * @param {FastifyInstance} app - The FastifyInstance object.
+	 * @returns {Promise<void>}
+	 */
 	private async seedIPHistoryForUser(user: any, app: FastifyInstance) {
 		await this.createAndSaveIPHistory(user);
 		await this.createAndSaveIPHistory(user);
 
 		app.log.info("Finished seeding IP history pair for user: " + user.id);
 	}
-
+	/**
+	 * Creates and saves an IPHistory record for a user.
+	 * @param {any} user - The user object.
+	 * @returns {Promise<void>}
+	 */
 	private async createAndSaveIPHistory(user: any) {
 		let ipHistory = new IPHistory();
 		ipHistory.user = user;
