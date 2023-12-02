@@ -1,6 +1,5 @@
 // We need dotenv here because our datasources are processed from CLI in addition to vite
 import dotenv from "dotenv";
-import TypeORM from "typeorm";
 import { DataSource } from "typeorm";
 // Similar reasoning as above, we need to add the file extensions to this file's imports for CLI usage
 import { User } from "../models/user";
@@ -23,7 +22,9 @@ dotenv.config();
 
 // @ts-ignore
 const env = process.env;
-
+/**
+ * The data source configuration for the development environment.
+ */
 export const AppDataSource = new DataSource({
 	type: "postgres",
 	host: env.VITE_DB_HOST,
@@ -32,7 +33,11 @@ export const AppDataSource = new DataSource({
 	password: env.VITE_DB_PASS,
 	database: env.VITE_DB_NAME,
 
-	// entities are used to tell TypeORM which tables to create in the database
+	
+	/**
+	 * The entities used by TypeORM to create tables in the database.
+	 * Entities are used to tell TypeORM which tables to create in the database
+	 */
 	entities: [
 		User,
 		IPHistory,
@@ -42,6 +47,9 @@ export const AppDataSource = new DataSource({
 		ShoppingList,
 		RecipeIngredientRel,
 	],
+	/**
+	 * The migrations used by TypeORM to manage database schema changes.
+	 */
 	migrations: [
 		InitialUserAndIP1677727436444,
 		RecipeAndMealPlan1677949379149,
@@ -52,6 +60,9 @@ export const AppDataSource = new DataSource({
 		RemovedMealID1678421078384,
 		UserUpdated1679295898488,
 	],
-	// DANGER DANGER our convenience will nuke production data!
+	/**
+	 * Whether to automatically synchronize the database schema on application startup.
+	 * Set to `false` to disable automatic synchronization.
+	 */
 	synchronize: false,
 });

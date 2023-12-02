@@ -30,9 +30,14 @@ interface DBConfigOpts {
 	connection: DataSource;
 }
 
+
 /**
+ * Fastify plugin for initializing the database connection and decorating the app instance with database repositories.
  * Connects and decorates fastify with our Database connection
  * @function
+ * @param {FastifyInstance} app - The Fastify app instance.
+ * @param {FastifyPluginOptions} options - The plugin options.
+ * @param {Function} done - The callback function to be called when the plugin has finished its work.
  */
 const DbPlugin = fp(
 	async (app: FastifyInstance, options: FastifyPluginOptions, done: any) => {
