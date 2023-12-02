@@ -22,7 +22,9 @@ dotenv.config();
 
 // @ts-ignore
 const env = process.env;
-
+/**
+ * The data source configuration for the development environment.
+ */
 export const AppDataSource = new DataSource({
 	type: "postgres",
 	host: env.VITE_DB_HOST,
@@ -30,12 +32,18 @@ export const AppDataSource = new DataSource({
 	username: env.VITE_DB_USER,
 	password: env.VITE_DB_PASS,
 	database: env.VITE_DB_NAME,
-	// entities are used to tell TypeORM which tables to create in the database
+	/**
+	 * The entities used by TypeORM to create tables in the database.
+	 * Entities are used to tell TypeORM which tables to create in the database
+	 */
 	entities: [User, IPHistory, MealPlans, Recipes, Ingredients, ShoppingList, RecipeIngredientRel],
 	migrations: [InitialUserAndIP1677727436444, RecipeAndMealPlan1677949379149,
 		IngredientsAndRecipeRelation1677950313532, ShoppingListInitUserAndIngRel1677951945972,
 		RpIngRelUpdated1678244285578, SpListAndRpIngRelUpdated1678248239126, RemovedMealID1678421078384,
 		UserUpdated1679295898488],
-	// DANGER DANGER our convenience will nuke production data!
+	/**
+	 * Whether to automatically synchronize the database schema on application startup.
+	 * Set to `false` to disable automatic synchronization.
+	 */
 	synchronize: false
 });
