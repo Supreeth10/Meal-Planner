@@ -12,6 +12,10 @@ export class PostRoutes {
 	constructor(app: FastifyInstance) {
 		this.app = app;
 	}
+
+	/**
+	 * Register post routes for the application.
+	 */
 	async registerRoutes() {
 		this.app.post("/users", this.postUser.bind(this));
 		this.app.post("/recipe", this.postRecipe.bind(this));
@@ -19,6 +23,12 @@ export class PostRoutes {
 		this.app.post("/shoppinglist", this.postShoppingList.bind(this));
 	}
 
+	/**
+	 * POST a new user
+	 * @route POST /users
+	 * @param {Request} req - The request object.
+	 * @param {Reply} reply - The reply object.
+	 */
 	async postUser(req: any, reply: any) {
 		const { name, email } = req.body;
 
@@ -48,6 +58,12 @@ export class PostRoutes {
 		}
 	}
 
+	/**
+	 * POST a new recipe
+	 * @route POST /recipe
+	 * @param {Request} req - The request object.
+	 * @param {Reply} reply - The reply object.
+	 */
 	async postRecipe(req: any, reply: any) {
 		const { recipeName, dietType, cuisine, description, ingredients } = req.body;
 		if (!recipeName || !dietType || !cuisine || !description || !ingredients) {
@@ -65,6 +81,12 @@ export class PostRoutes {
 		}
 	}
 
+	/**
+	 * POST a new mealplan for a user
+	 * @route POST /mealplan
+	 * @param {Request} req - The request object.
+	 * @param {Reply} reply - The reply object.
+	 */
 	async postMealPlan(req: any, reply: any) {
 		let mealTypeOptions = ["breakfast", "lunch", "dinner", "snack"];
 		let dayOfWeekOptions = [
@@ -130,6 +152,12 @@ export class PostRoutes {
 		}
 	}
 
+	/**
+	 * POST a new ingredient to a user's shopping list
+	 * @route POST /shoppinglist
+	 * @param {Request} req - The request object.
+	 * @param {Reply} reply - The reply object.
+	 */
 	async postShoppingList(req: any, reply: any) {
 		const { userId, ingredientId } = req.body;
 		if (!userId || !ingredientId) {
