@@ -9,22 +9,39 @@ import {
 import { Card } from "react-bootstrap";
 import axios from "axios";
 import "../Dashboard.css";
-import { SERVER_URL } from "./Config";
+import { SERVER_URL } from "../configuration/Config";
 import { URLS } from "./ConstantsPaths";
-import { getUserFromCookies, validateUserID } from "./UserAuthentication";
+import {
+  getUserFromCookies,
+  validateUserID,
+} from "../authentication/UserAuthentication";
 
+/**
+ * Component for adding a meal plan.
+ */
 export const PostMealPlanForm = () => {
+  // State to store selected meal type
   const [mealType, setMealType] = useState([]);
+
+  // State to store selected day
   const [selectedDay, setSelectedDay] = useState([]);
+
+  // State to store recipe ID
   const [recipeID, setRecipeID] = useState([]);
+
+  // State to track form submission success
   const [check, setCheck] = useState(false);
 
-  // Get user ID from cookies
+  // Get user ID from cookies and validate
   const userID = getUserFromCookies();
   validateUserID();
+
+  // Handler for form submission
   const handleSubmit = (e) => {
     setCheck(true);
   };
+
+  // Effect hook to send meal plan data to the server
   useEffect(() => {
     const getMealPlans = async () => {
       const postData = {
@@ -47,14 +64,19 @@ export const PostMealPlanForm = () => {
     void getMealPlans();
   }, [selectedDay, mealType, recipeID, userID]);
 
+  // Handler for day selection
   const handleDaySelection = (e) => {
     console.log(e);
     setSelectedDay(e);
   };
+
+  // Handler for meal type selection
   const handleMealType = (e) => {
     console.log(e);
     setMealType(e);
   };
+
+  // Handler for recipe ID input
   const handleRecipeID = (e) => {
     console.log(e.target.value);
     setRecipeID(e.target.value);
@@ -112,6 +134,9 @@ export const PostMealPlanForm = () => {
   );
 };
 
+/**
+ * Component to display success message after adding a meal plan.
+ */
 const PostSuccess = () => {
   return (
     <Card className="mt-5">

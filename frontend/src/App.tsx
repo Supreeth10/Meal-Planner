@@ -1,5 +1,3 @@
-
-
 // Note this is APP SPECIFIC css not included in our sitewide index.css
 import Home from './components/Home';
 import './App.css';

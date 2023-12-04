@@ -12,6 +12,10 @@ import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import Cookies from "js-Cookie";
 import { URLS } from "./ConstantsPaths";
 
+/**
+ * Main navigation component.
+ * Combines public links view and route definitions.
+ */
 export function NavMain() {
   return (
     <>
@@ -21,6 +25,10 @@ export function NavMain() {
   );
 }
 
+/**
+ * Renders public links in the navigation bar.
+ * Includes links to Home, Users, Recipes, Shopping List, and Meal Plans dropdown.
+ */
 function PublicLinksView() {
   const isUserLoggedIn = Cookies.get("user_id");
   return (
@@ -34,11 +42,11 @@ function PublicLinksView() {
           <Nav className="me-auto">{getNavLinks()}</Nav>
           <Nav>
             {isUserLoggedIn ? (
-              <Button variant="outline-primary" onClick={LogOutFunc}>
+              <Button variant="outline-primary" onClick={logOutFunction}>
                 Logout
               </Button>
             ) : (
-              <Button variant="outline-primary" onClick={LoginFunc}>
+              <Button variant="outline-primary" onClick={loginFunction}>
                 Login
               </Button>
             )}
@@ -49,6 +57,10 @@ function PublicLinksView() {
   );
 }
 
+/**
+ * Defines routes for different components.
+ * Includes Users, Recipes, All Meal Plans, Day Meal Plans, Delete Meal Plan, Post Meal Plan, and Shopping List.
+ */
 function NavRoutes() {
   return (
     <Routes>
@@ -63,14 +75,24 @@ function NavRoutes() {
   );
 }
 
-function LoginFunc() {
+/**
+ * Redirects to the login page.
+ */
+function loginFunction() {
   window.location.href = URLS.LOGIN;
 }
 
-function LogOutFunc() {
+/**
+ * Redirects to the logout page.
+ */
+function logOutFunction() {
   window.location.href = URLS.LOGOUT;
 }
 
+/**
+ * Generates navigation links.
+ * Includes Users, Recipes, Shopping List, and Meal Plans dropdown.
+ */
 function getNavLinks() {
   return (
     <>
@@ -90,6 +112,10 @@ function getNavLinks() {
   );
 }
 
+/**
+ * Generates dropdown links for Meal Plans.
+ * Includes List all Meal Plan, List Meal Plan by day, Delete Meal Plan, and Add Meal Plan.
+ */
 function getDropdownMealPlanLinks() {
   return (
     <>

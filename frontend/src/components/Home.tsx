@@ -1,6 +1,9 @@
 import "../Dashboard.css";
 import myImage from "../assets/Mealplanner_img1.webp";
 
+/**
+ * Functional component representing the home page.
+ */
 export default function Home() {
   return (
     <div>
@@ -11,10 +14,17 @@ export default function Home() {
   );
 }
 
+/**
+ * Functional component representing the title of the application.
+ */
 export function Title() {
   return <h1>Meal-Planner</h1>;
 }
 
+/**
+ * Functional component representing the dashboard image.
+ * @returns The DashboardImage component.
+ */
 export function DashboardImage() {
   return (
     <div>
@@ -22,6 +32,11 @@ export function DashboardImage() {
     </div>
   );
 }
+
+/**
+ * Functional component welcoming users to the MealPlanner.
+ * @returns The Welcome component.
+ */
 export function Welcome() {
   return (
     <div>
