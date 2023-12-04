@@ -19,7 +19,7 @@ export class PostRoutes {
 	async registerRoutes() {
 		this.app.post("/users", this.postUser.bind(this));
 		this.app.post("/recipe", this.postRecipe.bind(this));
-		this.app.post("/mealplan", this.postMealPlan.bind(this));
+		this.app.post("/mealplan", this.postMealPlanRoute.bind(this));
 		this.app.post("/shoppinglist", this.postShoppingList.bind(this));
 	}
 
@@ -87,7 +87,7 @@ export class PostRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async postMealPlan(req: any, reply: any) {
+	async postMealPlanRoute(req: any, reply: any) {
 		let mealTypeOptions = ["breakfast", "lunch", "dinner", "snack"];
 		let dayOfWeekOptions = [
 			"monday",

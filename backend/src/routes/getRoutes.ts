@@ -16,15 +16,15 @@ export class GetRoutes {
 	 * Register get routes for the application.
 	 */
 	async registerRoutes() {
-		this.app.get("/users", this.getUsers.bind(this));
+		this.app.get("/users", this.getUsersRoute.bind(this));
 		this.app.get("/users/:id", this.getUserById.bind(this));
-		this.app.get("/recipes", this.getRecipes.bind(this));
+		this.app.get("/recipes", this.getRecipesRoute.bind(this));
 		this.app.get("/recipes/cuisine/:cuisine", this.getRecipesByCuisine.bind(this));
 		this.app.get("/recipes/dietType/:dietType", this.getRecipesByDietType.bind(this));
 		this.app.get("/recipes/:cuisine/:dietType", this.getRecipesByCuisineAndDietType.bind(this));
-		this.app.get("/mealplan/:userid", this.getMealPlan.bind(this));
+		this.app.get("/mealplan/:userid", this.getMealPlanRoute.bind(this));
 		this.app.get("/mealplan/:userid/:dayOfWeek", this.getMealPlanByDayOfWeek.bind(this));
-		this.app.get("/shoppingList/:userid", this.getShoppingList.bind(this));
+		this.app.get("/shoppingList/:userid", this.getShoppingListRoute.bind(this));
 	}
 
 	/**
@@ -33,7 +33,7 @@ export class GetRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async getUsers(req: any, reply: any) {
+	async getUsersRoute(req: any, reply: any) {
 		let users = await this.app.db.user.find();
 		reply.send(users);
 	}
@@ -64,7 +64,7 @@ export class GetRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async getRecipes(req: any, reply: any) {
+	async getRecipesRoute(req: any, reply: any) {
 		let recipe = await this.app.db.rp.find();
 		reply.send(recipe);
 	}
@@ -112,7 +112,7 @@ export class GetRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async getMealPlan(req: any, reply: any) {
+	async getMealPlanRoute(req: any, reply: any) {
 		const userid = req.params.userid;
 		await getMealPlan(this.app, reply, userid);
 	}
@@ -135,7 +135,7 @@ export class GetRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async getShoppingList(req: any, reply: any) {
+	async getShoppingListRoute(req: any, reply: any) {
 		const userid = req.params.userid;
 		let shoppingList = await this.app.db.sl.find({
 			relations: {
