@@ -3,10 +3,21 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import axios from "axios";
-import { SERVER_URL } from "./Config";
-import { getUserFromCookies, validateUserID } from "./UserAuthentication";
-import { daysOfWeeksOptions, mealTypeOptions, DropdownSelectors } from "../ui_components/DropdownButton";
+import { SERVER_URL } from "../configuration/Config";
+import {
+  getUserFromCookies,
+  validateUserID,
+} from "../authentication/UserAuthentication";
+import {
+  daysOfWeeksOptions,
+  mealTypeOptions,
+  DropdownSelectors,
+} from "../ui_components/DropdownButton";
 
+/**
+ * React component for managing and deleting meal plans.
+ * @returns MealPlanForm component.
+ */
 export const MealPlanForm = () => {
   const [selectedMealType, setSelectedMealtype] = useState([]);
   const [selectedDayOfWeek, setSelectedDayOfWeek] = useState([]);
@@ -15,10 +26,19 @@ export const MealPlanForm = () => {
   // Get user ID from cookies
   const userID = getUserFromCookies();
   validateUserID();
+
+  /**
+   * Handles form submission for deleting a meal plan.
+   * @param e The form submission event.
+   */
   const handleSubmit = (e) => {
     setMealPlanDeleted(true);
   };
+
   useEffect(() => {
+    /**
+     * Fetches and deletes the selected meal plan.
+     */
     const getMealPlans = async () => {
       const mealplan = await axios.delete(
         `${SERVER_URL}/mealplan/${userID}/${selectedDayOfWeek}/${selectedMealType}`
@@ -27,10 +47,19 @@ export const MealPlanForm = () => {
     void getMealPlans();
   }, [selectedDayOfWeek, selectedMealType, userID]);
 
+  /**
+   * Handles the selection of meal types.
+   * @param e Selected meal types.
+   */
   const handleMealType = (e) => {
     console.log(e);
     setSelectedMealtype(e);
   };
+
+  /**
+   * Handles the selection of days of the week.
+   * @param e Selected days of the week.
+   */
   const handleDay = (e) => {
     console.log(e);
     setSelectedDayOfWeek(e);

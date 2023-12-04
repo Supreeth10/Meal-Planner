@@ -1,5 +1,11 @@
 import { Table } from 'react-bootstrap';
 
+/**
+ * TableComponent for displaying tabular data.
+ * @param headers - Array of table headers.
+ * @param rows - Array of table rows.
+ * @returns TableComponent.
+ */
 export const TableComponent = ({ headers, rows }) => (
     <Table striped bordered hover>
         <thead>
