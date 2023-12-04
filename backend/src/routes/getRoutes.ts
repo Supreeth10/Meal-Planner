@@ -6,17 +6,37 @@ import { FastifyInstance } from "fastify";
  * @module GetRoutes
  * @param {FastifyInstance} app - The Fastify server instance. 
  */
-export default async function getRoutes(app: FastifyInstance) {
+export class GetRoutes {
+	private app: FastifyInstance;
+	constructor(app: FastifyInstance) {
+		this.app = app;
+	}
+
+	/**
+	 * Register get routes for the application.
+	 */
+	async registerRoutes() {
+		this.app.get("/users", this.getUsersRoute.bind(this));
+		this.app.get("/users/:id", this.getUserById.bind(this));
+		this.app.get("/recipes", this.getRecipesRoute.bind(this));
+		this.app.get("/recipes/cuisine/:cuisine", this.getRecipesByCuisine.bind(this));
+		this.app.get("/recipes/dietType/:dietType", this.getRecipesByDietType.bind(this));
+		this.app.get("/recipes/:cuisine/:dietType", this.getRecipesByCuisineAndDietType.bind(this));
+		this.app.get("/mealplan/:userid", this.getMealPlanRoute.bind(this));
+		this.app.get("/mealplan/:userid/:dayOfWeek", this.getMealPlanByDayOfWeek.bind(this));
+		this.app.get("/shoppingList/:userid", this.getShoppingListRoute.bind(this));
+	}
+
 	/**
 	 * GET all users
 	 * @route GET /users
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/users", async (req: any, reply: any) => {
-		let users = await app.db.user.find();
+	async getUsersRoute(req: any, reply: any) {
+		let users = await this.app.db.user.find();
 		reply.send(users);
-	});
+	}
 
 	/**
 	 * GET user by id
@@ -24,9 +44,9 @@ export default async function getRoutes(app: FastifyInstance) {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/users/:id", async (req: any, reply: any) => {
+	async getUserById(req: any, reply: any) {
 		const id = req.params.id;
-		let user = await app.db.user.find({
+		let user = await this.app.db.user.find({
 			where: {
 				id: id,
 			},
@@ -36,7 +56,7 @@ export default async function getRoutes(app: FastifyInstance) {
 		} else {
 			reply.send(user);
 		}
-	});
+	}
 
 	/**
 	 * GET all recipes
@@ -44,80 +64,80 @@ export default async function getRoutes(app: FastifyInstance) {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/recipes", async (req: any, reply: any) => {
-		let recipe = await app.db.rp.find();
+	async getRecipesRoute(req: any, reply: any) {
+		let recipe = await this.app.db.rp.find();
 		reply.send(recipe);
-	});
+	}
 
 	/**
-	 * GET all recipes for a particular cuisine
+	 * GET recipes by cuisine
 	 * @route GET /recipes/cuisine/{cuisine}
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/recipes/cuisine/:cuisine", async (req: any, reply: any) => {
-		await getRecipes(app, reply, [
+	async getRecipesByCuisine(req: any, reply: any) {
+		await getRecipes(this.app, reply, [
 			{ name: 'cuisine', value: req.params.cuisine }
 		]);
-	});
+	}
 
 	/**
-	 * GET all recipes for a particular dietType
+	 * GET recipes by dietType
 	 * @route GET /recipes/dietType/{dietType}
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/recipes/dietType/:dietType", async (req: any, reply: any) => {
-		await getRecipes(app, reply, [
+	async getRecipesByDietType(req: any, reply: any) {
+		await getRecipes(this.app, reply, [
 			{ name: 'dietType', value: req.params.dietType }
 		]);
-	});
+	}
 
 	/**
-	 * GET all recipes for a particular cuisine and dietType
+	 * GET recipes by cuisine and dietType
 	 * @route GET /recipes/{cuisine}/{dietType}
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/recipes/:cuisine/:dietType", async (req: any, reply: any) => {
-		await getRecipes(app, reply, [
+	async getRecipesByCuisineAndDietType(req: any, reply: any) {
+		await getRecipes(this.app, reply, [
 			{ name: 'cuisine', value: req.params.cuisine },
 			{ name: 'dietType', value: req.params.dietType },
 		]);
-	});
+	}
 
 	/**
-	 * Get all mealplans for a user
+	 * GET mealplan for a user
 	 * @route GET /mealplan/{userid}
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/mealplan/:userid", async (req: any, reply: any) => {
+	async getMealPlanRoute(req: any, reply: any) {
 		const userid = req.params.userid;
-		await getMealPlan(app, reply, userid);
-	});
+		await getMealPlan(this.app, reply, userid);
+	}
 
 	/**
-	 * Get all mealplans for a user based on dayOfWeek
+	 * GET mealplan for a user based on dayOfWeek
 	 * @route GET /mealplan/{userid}/{dayOfWeek}
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/mealplan/:userid/:dayOfWeek", async (req: any, reply: any) => {
+	async getMealPlanByDayOfWeek(req: any, reply: any) {
 		const userid = req.params.userid;
 		const dayOfWeek = req.params.dayOfWeek;
-		await getMealPlan(app, reply, userid, dayOfWeek);
-	});
+		await getMealPlan(this.app, reply, userid, dayOfWeek);
+	}
 
 	/**
-	 * Get shopping list for a user
+	 * GET shopping list for a user
 	 * @route GET /shoppingList/{userid}
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.get("/shoppingList/:userid", async (req: any, reply: any) => {
+	async getShoppingListRoute(req: any, reply: any) {
 		const userid = req.params.userid;
-		let shoppingList = await app.db.sl.find({
+		let shoppingList = await this.app.db.sl.find({
 			relations: {
 				user: true,
 				ing: true,
@@ -136,5 +156,5 @@ export default async function getRoutes(app: FastifyInstance) {
 		} else {
 			reply.send(shoppingList);
 		}
-	});
+	}
 }
