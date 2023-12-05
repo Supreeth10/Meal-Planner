@@ -18,10 +18,10 @@ export class DeleteRoutes {
 	 * Register delete routes for the application.
 	 */
 	async registerRoutes() {
-		this.app.delete("/users/:id", this.deleteUserById.bind(this));
-		this.app.delete("/mealplan/:userid", this.deleteMealPlanRoute.bind(this));
-		this.app.delete("/mealplan/:userid/:dayOfWeek/:mealType", this.deleteMealPlanByDayOfWeekAndMealType.bind(this));
-		this.app.delete("/mealplan/:userid/:dayOfWeek", this.deleteMealPlanByDayOfWeek.bind(this));
+		this.app.delete("/users/:id", this.delUserByIdRoute.bind(this));
+		this.app.delete("/mealplan/:userid", this.delMPByUserIdRoute.bind(this));
+		this.app.delete("/mealplan/:userid/:dayOfWeek/:mealType", this.delMPByDayOfWeekAndMealTypeRoute.bind(this));
+		this.app.delete("/mealplan/:userid/:dayOfWeek", this.delMPByDayOfWeekRoute.bind(this));
 	}
 
 	/**
@@ -30,7 +30,7 @@ export class DeleteRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async deleteUserById(req: any, reply: any) {
+	async delUserByIdRoute(req: any, reply: any) {
 		const id = req.params.id;
 		let user = await this.app.db.user.findOneByOrFail({
 			id: id,
@@ -45,7 +45,7 @@ export class DeleteRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async deleteMealPlanRoute(req: any, reply: any) {
+	async delMPByUserIdRoute(req: any, reply: any) {
 		const userId = req.params.userid;
 		await deleteMealPlan(this.app, userId, {}, reply);
 	}
@@ -56,7 +56,7 @@ export class DeleteRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async deleteMealPlanByDayOfWeekAndMealType(req: any, reply: any) {
+	async delMPByDayOfWeekAndMealTypeRoute(req: any, reply: any) {
 		const { userid, dayOfWeek, mealType } = req.params;
 		await deleteMealPlan(this.app, userid, { dayOfWeek, mealType }, reply);
 	}
@@ -67,7 +67,7 @@ export class DeleteRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async deleteMealPlanByDayOfWeek(req: any, reply: any) {
+	async delMPByDayOfWeekRoute(req: any, reply: any) {
 		const { userid, dayOfWeek } = req.params;
 		await deleteMealPlan(this.app, userid, { dayOfWeek }, reply);
 	}

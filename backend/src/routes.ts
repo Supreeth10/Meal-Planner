@@ -3,7 +3,7 @@ import cors from "cors";
 import { FastifyInstance } from "fastify";
 import { GetRoutes } from "./routes/getRoutes";
 import { DeleteRoutes } from "./routes/deleteRoutes";
-import putRoutes from "./routes/putRoutes";
+import { PutRoutes } from "./routes/putRoutes";
 import { PostRoutes } from "./routes/postRoutes";
 
 
@@ -17,8 +17,10 @@ export async function planner_routes(app: FastifyInstance): Promise<void> {
 	const getRoutes = new GetRoutes(app);
 	const postRoutes = new PostRoutes(app);
 	const deleteRoutes = new DeleteRoutes(app);
+	const putRoutes = new PutRoutes(app);
+
 	getRoutes.registerRoutes();
-	putRoutes(app);
+	putRoutes.registerRoutes();
 	postRoutes.registerRoutes();
 	deleteRoutes.registerRoutes();
 }
