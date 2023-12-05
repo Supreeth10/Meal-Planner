@@ -2,25 +2,42 @@ import { deleteMealPlan } from '../HelperFunctions';
 import { FastifyInstance } from "fastify";
 
 /**
- * This module exports an async function that sets up DELETE routes for the Fastify application.
- * @module DeleteRoutes
- * @param {FastifyInstance} app - The Fastify server instance.
+ * Represents a class that handles delete routes for the application.
  */
-export default async function delRoutes(app: FastifyInstance) {
+export class DeleteRoutes {
+	private app: FastifyInstance;
 	/**
-     * DELETE user by id
-     * @route DELETE /users/{id}
-     * @param {Request} req - The request object.
-     * @param {Reply} reply - The reply object.
-     */
-	app.delete("/users/:id", async (req: any, reply: any) => {
+	 * Creates an instance of DeleteRoutes.
+	 * @param {FastifyInstance} app - The Fastify instance.
+	 */
+	constructor(app: FastifyInstance) {
+		this.app = app;
+	}
+
+	/**
+	 * Register delete routes for the application.
+	 */
+	async registerRoutes() {
+		this.app.delete("/users/:id", this.delUserByIdRoute.bind(this));
+		this.app.delete("/mealplan/:userid", this.delMPByUserIdRoute.bind(this));
+		this.app.delete("/mealplan/:userid/:dayOfWeek/:mealType", this.delMPByDayOfWeekAndMealTypeRoute.bind(this));
+		this.app.delete("/mealplan/:userid/:dayOfWeek", this.delMPByDayOfWeekRoute.bind(this));
+	}
+
+	/**
+	 * DELETE user by id
+	 * @route DELETE /users/{id}
+	 * @param {Request} req - The request object.
+	 * @param {Reply} reply - The reply object.
+	 */
+	async delUserByIdRoute(req: any, reply: any) {
 		const id = req.params.id;
-		let user = await app.db.user.findOneByOrFail({
+		let user = await this.app.db.user.findOneByOrFail({
 			id: id,
 		});
 		let res = await user.remove();
 		reply.send(user);
-	});
+	}
 
 	/**
 	 * DELETE mealplan for a user
@@ -28,10 +45,10 @@ export default async function delRoutes(app: FastifyInstance) {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.delete("/mealplan/:userid", async (req: any, reply: any) => {
+	async delMPByUserIdRoute(req: any, reply: any) {
 		const userId = req.params.userid;
-		await deleteMealPlan(app, userId, {}, reply);
-	});
+		await deleteMealPlan(this.app, userId, {}, reply);
+	}
 
 	/**
 	 * DELETE mealplan for a user based on dayOfWeek and mealType
@@ -39,13 +56,10 @@ export default async function delRoutes(app: FastifyInstance) {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.delete(
-		"/mealplan/:userid/:dayOfWeek/:mealType",
-		async (req: any, reply: any) => {
-			const { userid, dayOfWeek, mealType } = req.params;
-			await deleteMealPlan(app, userid, { dayOfWeek, mealType }, reply);
-		}
-	);
+	async delMPByDayOfWeekAndMealTypeRoute(req: any, reply: any) {
+		const { userid, dayOfWeek, mealType } = req.params;
+		await deleteMealPlan(this.app, userid, { dayOfWeek, mealType }, reply);
+	}
 
 	/**
 	 * DELETE mealplan for a user based on dayOfWeek
@@ -53,9 +67,8 @@ export default async function delRoutes(app: FastifyInstance) {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	app.delete("/mealplan/:userid/:dayOfWeek", async (req: any, reply: any) => {
+	async delMPByDayOfWeekRoute(req: any, reply: any) {
 		const { userid, dayOfWeek } = req.params;
-		await deleteMealPlan(app, userid, { dayOfWeek }, reply);
-	});
-
+		await deleteMealPlan(this.app, userid, { dayOfWeek }, reply);
+	}
 }

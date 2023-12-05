@@ -3,9 +3,7 @@ import { createUser, createRecipeAndIngredients, createMealPlan } from "../Helpe
 import { ShoppingList } from "../db/models/shopping_list";
 
 /**
- * This module exports an async function that sets up POST routes for the Fastify application.
- * @module PostRoutes
- * @param {FastifyInstance} app - The Fastify server instance.
+ * Represents a class that handles Post routes for the application.
  */
 export class PostRoutes {
 	private app: FastifyInstance;
@@ -17,10 +15,10 @@ export class PostRoutes {
 	 * Register post routes for the application.
 	 */
 	async registerRoutes() {
-		this.app.post("/users", this.postUser.bind(this));
-		this.app.post("/recipe", this.postRecipe.bind(this));
-		this.app.post("/mealplan", this.postMealPlanRoute.bind(this));
-		this.app.post("/shoppinglist", this.postShoppingList.bind(this));
+		this.app.post("/users", this.postUserRoute.bind(this));
+		this.app.post("/recipe", this.postRecipeRoute.bind(this));
+		this.app.post("/mealplan", this.postMPRoute.bind(this));
+		this.app.post("/shoppinglist", this.postShoppingListRoute.bind(this));
 	}
 
 	/**
@@ -29,7 +27,7 @@ export class PostRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async postUser(req: any, reply: any) {
+	async postUserRoute(req: any, reply: any) {
 		const { name, email } = req.body;
 
 		if (!name || !email) {
@@ -64,7 +62,7 @@ export class PostRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async postRecipe(req: any, reply: any) {
+	async postRecipeRoute(req: any, reply: any) {
 		const { recipeName, dietType, cuisine, description, ingredients } = req.body;
 		if (!recipeName || !dietType || !cuisine || !description || !ingredients) {
 			reply.status(400).send({ error: "recipeName, description, cuisine, dietType, and ingredients are required" });
@@ -87,7 +85,7 @@ export class PostRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async postMealPlanRoute(req: any, reply: any) {
+	async postMPRoute(req: any, reply: any) {
 		let mealTypeOptions = ["breakfast", "lunch", "dinner", "snack"];
 		let dayOfWeekOptions = [
 			"monday",
@@ -158,7 +156,7 @@ export class PostRoutes {
 	 * @param {Request} req - The request object.
 	 * @param {Reply} reply - The reply object.
 	 */
-	async postShoppingList(req: any, reply: any) {
+	async postShoppingListRoute(req: any, reply: any) {
 		const { userId, ingredientId } = req.body;
 		if (!userId || !ingredientId) {
 			let errMsg = {

@@ -2,9 +2,7 @@ import { handleNotFoundResponse, getRecipes, getMealPlan } from '../HelperFuncti
 import { FastifyInstance } from "fastify";
 
 /**
- * This module exports an async function that sets up GET routes for the Fastify application.
- * @module GetRoutes
- * @param {FastifyInstance} app - The Fastify server instance. 
+ * Represents a class that handles get routes for the application.
  */
 export class GetRoutes {
 	private app: FastifyInstance;
