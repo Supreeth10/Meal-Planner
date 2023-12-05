@@ -2,7 +2,7 @@
 import cors from "cors";
 import { FastifyInstance } from "fastify";
 import { GetRoutes } from "./routes/getRoutes";
-import { DeleteRoutes } from "./routes/deleteRoutes";
+import { DeleteRoutes } from "./routes/DeleteRoutes";
 import { PutRoutes } from "./routes/putRoutes";
 import { PostRoutes } from "./routes/postRoutes";
 
